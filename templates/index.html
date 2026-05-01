@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Data Analyzer</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#0f172a;
+    color:white;
+}
+
+.container{
+    max-width:900px;
+    margin:40px auto;
+    background:#111827;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+h1{
+    text-align:center;
+    color:#38bdf8;
+}
+
+p{
+    text-align:center;
+    color:#cbd5e1;
+}
+
+.upload-box{
+    text-align:center;
+    margin:30px 0;
+}
+
+input[type=file]{
+    padding:10px;
+    color:white;
+}
+
+button{
+    background:#38bdf8;
+    color:black;
+    border:none;
+    padding:12px 22px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0ea5e9;
+}
+
+#result{
+    margin-top:30px;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+
+.stat{
+    font-size:18px;
+    margin:8px 0;
+    color:#e2e8f0;
+}
+
+.insights{
+    line-height:1.8;
+    color:#f8fafc;
+}
+
+h2{
+    color:#38bdf8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🤖 AI Powered Data Analyzer</h1>
+<p>Upload CSV files and get instant smart insights</p>
+
+<div class="upload-box">
+<input type="file" id="csvFile">
+<button onclick="analyzeData()">Analyze Data</button>
+</div>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+async function analyzeData() {
+
+const fileInput = document.getElementById('csvFile');
+const file = fileInput.files[0];
+
+if(!file){
+alert("Please select a CSV file");
+return;
+}
+
+const formData = new FormData();
+formData.append('file', file);
+
+const response = await fetch('/analyze',{
+method:'POST',
+body:formData
+});
+
+const data = await response.json();
+
+document.getElementById('result').innerHTML = `
+<div class="card">
+<h2>📊 Dataset Overview</h2>
+<div class="stat">Rows: ${data.rows}</div>
+<div class="stat">Columns: ${data.columns}</div>
+<div class="stat">Missing Values: ${data.missing}</div>
+<div class="stat">Duplicates: ${data.duplicates}</div>
+</div>
+
+<div class="card">
+<h2>🤖 AI Insights</h2>
+<div class="insights">${data.ai_insights}</div>
+</div>
+`;
+}
+</script>
+
+</body>
+</html>
